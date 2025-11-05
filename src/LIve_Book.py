@@ -1,3 +1,4 @@
+
 import yfinance as yf
 import random
 import time
@@ -13,7 +14,7 @@ refresh_ms = 1000      # Refresh interval in milliseconds
 # ---------- ORDER BOOK SIMULATION ----------
 def get_live_price(symbol):
     try:
-        data = yf.Ticker(symbol).history(period="1m")
+        data = yf.Ticker(symbol).history(period="1mo", interval="1mo")
         return float(data["Close"].iloc[-1])
     except Exception:
         return None
