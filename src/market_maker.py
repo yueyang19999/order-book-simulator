@@ -35,7 +35,7 @@ class MarketMaker(Trader):
         *,
         # quoting
         tick: float = 0.01,            # absolute tick to ensure prices > 0
-        offset: float = 0.50,          # absolute offset if pct_offset=False
+        offset: float = 0.10,          # absolute offset if pct_offset=False
         pct_offset: bool = False,      # if True, use offset (%) of mid
         # inventory / sizing
         base_size: float = 5.0,
@@ -107,6 +107,8 @@ class MarketMaker(Trader):
                 self._active_ask = None
                 self._needs_refresh = True
 
+        if self._last_mid is None:
+            self._needs_refresh = True
         self._last_mid = mid
 
     def generate_order(self, current_midprice: float) -> Optional[Order]:
@@ -136,18 +138,22 @@ class MarketMaker(Trader):
 
         # Decide which order to return this call
         if self._active_bid is None and (self._want_bid or self._active_ask is not None):
-            order = self.new_order("buy", bid_px, bid_sz)
+            side = "buy"
+            order = self.new_order(side, bid_px, bid_sz)
             self._active_bid = (order.id, order.price, order.quantity)
             self._want_bid = False
+            print(f"[{self.trader_id}] {side.upper()} {order.quantity:.2f} @ ${order.price:.2f}")
             return order
 
         if self._active_ask is None:
-            order = self.new_order("sell", ask_px, ask_sz)
+            side = "sell"
+            order = self.new_order(side, ask_px, ask_sz)
             self._active_ask = (order.id, order.price, order.quantity)
             self._want_bid = True
             # If we just (re)built both sides, clear refresh flag
             if self._active_bid is not None:
                 self._needs_refresh = False
+            print(f"[{self.trader_id}] {side.upper()} {order.quantity:.2f} @ ${order.price:.2f}")
             return order
 
         # If we reach here, both sides are active; clear refresh flag
