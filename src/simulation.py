@@ -251,15 +251,13 @@ def main():
     sim.show_order_book()
     print("end of inital order book setup")
     # Register 3 noise traders Poisson information events
-    sim.register_trader(NoiseTrader("NoiseTrader_A", lambda_rate=0.3))
-    sim.register_trader(NoiseTrader("NoiseTrader_B", lambda_rate=0.8))
-    sim.register_trader(NoiseTrader("NoiseTrader_C", lambda_rate=0.9))
+    sim.register_trader(NoiseTrader("NoiseTrader", lambda_rate=0.9))
+
     # Informed traders: private signals, Poisson information events
-    sim.register_trader(InformedTrader("InformedTrader_X", lambda_rate=0.4, info_strength = 10, true_value=150))
-    sim.register_trader(InformedTrader("InformedTrader_Y", lambda_rate=0.2, info_strength = 100, true_value=130))
+    sim.register_trader(InformedTrader("InformedTrader", lambda_rate=0.2, info_strength = 10, true_value=150))
+
     # Market Makers
-    sim.register_trader(MarketMaker("MarketMaker_1", offset=0.10, base_size=10.0, refresh_abs=0.5))
-    sim.register_trader(MarketMaker("MarketMaker_2", offset=0.05, base_size=8.0, refresh_abs=0.3))
+    sim.register_trader(MarketMaker("MarketMaker", offset=0.10, base_size=10.0, refresh_abs=0.1))
     
     sim.run_time(duration=500, delta_t=1.0, base_price=100.0, show_book_freq=5)
 
