@@ -108,17 +108,17 @@ class LiveOrderBookSim:
         self.traders.append(
             MarketMaker(
                 "MarketMaker_1",
-                offset=0.10,
+                offset=0.02,
                 base_size=10.0,
-                refresh_abs=0.5,
+                refresh_abs=0.1,
             )
         )
         self.traders.append(
             MarketMaker(
                 "MarketMaker_2",
-                offset=0.05,
+                offset=0.03,
                 base_size=8.0,
-                refresh_abs=0.3,
+                refresh_abs=0.2,
             )
         )
 
@@ -140,8 +140,10 @@ class LiveOrderBookSim:
         bid, ask = self.engine.top_of_book()
         if bid is not None and ask is not None:
             mid = 0.5 * (bid + ask)
+        elif ask is None:
+            mid = bid
         else:
-            mid = base_price
+            mid = ask
 
         # 1) Market makers update & quote
         for trader in self.traders:
